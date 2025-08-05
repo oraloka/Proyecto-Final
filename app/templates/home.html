@@ -1,0 +1,110 @@
+{% block title %}Inicio | Ferretería Aldía{% endblock %}
+{% block content %}
+<div class="jumbotron text-center" style="background: linear-gradient(90deg, #e30613 0%, #f9d423 100%); color: #fff; border-radius: 1.5rem; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
+  <img src="https://i.imgur.com/8QfQ2Qp.png" alt="Logo" style="height:70px; margin-bottom:1rem;">
+  <h1 class="display-4 font-weight-bold">¡Bienvenido a Ferretería Aldía!</h1>
+  <p class="lead">Todo para tu obra, taller y hogar en un solo lugar.</p>
+  <hr class="my-4" style="border-color:rgba(255,255,255,0.3);">
+  <a href="{{ url_for('auth.login') }}" class="btn btn-danger btn-lg px-5 py-2 font-weight-bold" style="font-size:1.3rem; border-radius:2rem;">Iniciar Sesión</a>
+</div>
+<div class="row mt-5">
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm text-center" style="border-radius:1rem;">
+      <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" class="card-img-top mx-auto mt-3" alt="Cemento" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      <div class="card-body">
+        <h5 class="card-title">Cemento y Materiales</h5>
+        <p class="card-text">Cemento, arena, grava, ladrillos y más para tu construcción.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm text-center" style="border-radius:1rem;">
+      <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" class="card-img-top mx-auto mt-3" alt="Herramientas" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      <div class="card-body">
+        <h5 class="card-title">Herramientas</h5>
+        <p class="card-text">Taladros, sierras, mototool, herramientas eléctricas y manuales.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm text-center" style="border-radius:1rem;">
+      <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80" class="card-img-top mx-auto mt-3" alt="Ferretería" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      <div class="card-body">
+        <h5 class="card-title">Ferretería General</h5>
+        <p class="card-text">Tornillos, pinturas, accesorios y todo lo que necesitas.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% extends 'base.html' %}
+{% block title %}Inicio | Ferretería Construmateriales{% endblock %}
+{% block content %}
+<div class="jumbotron text-center" style="background: linear-gradient(90deg, #e30613 0%, #f9d423 100%); color: #fff; border-radius: 1.5rem; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
+  <img src="https://i.imgur.com/8QfQ2Qp.png" alt="Logo" style="height:70px; margin-bottom:1rem;">
+  <h1 class="display-4 font-weight-bold">¡Bienvenido a Ferretería Construmateriales!</h1>
+  <p class="lead">Tu tienda virtual de materiales de construcción, herramientas y todo para tu obra.</p>
+  <hr class="my-4" style="border-color:rgba(255,255,255,0.3);">
+  <a href="{{ url_for('publico.catalogo_publico') }}" class="btn btn-primary btn-lg px-5 py-2 font-weight-bold" style="font-size:1.3rem; border-radius:2rem;">Ver Catálogo</a>
+  <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg px-5 py-2 font-weight-bold ml-2" style="font-size:1.3rem; border-radius:2rem;">Iniciar Sesión</a>
+</div>
+<div class="row mt-5">
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm text-center" style="border-radius:1rem;">
+      <img src="/static/imagenes/cemento.jpg" class="card-img-top mx-auto mt-3" alt="Cemento" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      <div class="card-body">
+        <h5 class="card-title">Cemento y Materiales</h5>
+        <p class="card-text">Cemento, arena, grava, ladrillos y más para tu construcción.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm text-center" style="border-radius:1rem;">
+      <img src="/static/imagenes/hierro.jpg" class="card-img-top mx-auto mt-3" alt="Hierro y Acero" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      <div class="card-body">
+        <h5 class="card-title">Hierro y Acero</h5>
+        <p class="card-text">Varillas, mallas, perfiles y todo lo necesario para estructuras resistentes.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm text-center" style="border-radius:1rem;">
+      <img src="/static/imagenes/ladrillo.jpg" class="card-img-top mx-auto mt-3" alt="Ladrillos y Bloques" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      <div class="card-body">
+        <h5 class="card-title">Ladrillos y Bloques</h5>
+        <p class="card-text">Ladrillos cerámicos, bloques de cemento y más para tu obra.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm text-center" style="border-radius:1rem;">
+      <img src="/static/imagenes/cal.jpg" class="card-img-top mx-auto mt-3" alt="Cal y Arena" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      <div class="card-body">
+        <h5 class="card-title">Cal y Arena</h5>
+        <p class="card-text">Materiales básicos para mezclas y acabados de calidad.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm text-center" style="border-radius:1rem;">
+      <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" class="card-img-top mx-auto mt-3" alt="Herramientas" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      <div class="card-body">
+        <h5 class="card-title">Herramientas</h5>
+        <p class="card-text">Taladros, sierras, mototool, herramientas eléctricas y manuales.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm text-center" style="border-radius:1rem;">
+      <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80" class="card-img-top mx-auto mt-3" alt="Ferretería" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      <div class="card-body">
+        <h5 class="card-title">Ferretería General</h5>
+        <p class="card-text">Tornillos, pinturas, accesorios y todo lo que necesitas.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

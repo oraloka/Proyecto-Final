@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Catálogo de Materiales | Ferretería Construmateriales{% endblock %}
+{% block content %}
+<h2 class="text-center mb-4" style="color:#e30613; font-weight:700; font-size:2.2rem;">Catálogo de Materiales y Herramientas</h2>
+<div class="row">
+  {% for producto in productos %}
+  <div class="col-md-3 col-6 mb-4">
+    <div class="card h-100 shadow-sm product-card text-center" style="border-radius:1rem; border:1px solid #eee;">
+      {% if producto.imagen_url and producto.imagen_url.startswith('http') %}
+        <img src="{{ producto.imagen_url }}" class="card-img-top mx-auto mt-3" alt="{{ producto.nombre }}" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      {% elif producto.imagen_url %}
+        <img src="{{ url_for('static', filename='imagenes/' + producto.imagen_url.split('/')[-1]) }}" class="card-img-top mx-auto mt-3" alt="{{ producto.nombre }}" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      {% else %}
+        <img src="https://via.placeholder.com/200x150?text=Producto" class="card-img-top mx-auto mt-3" alt="{{ producto.nombre }}" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      {% endif %}
+      <div class="card-body p-2">
+        <h5 class="card-title" style="font-size:1.1rem; font-weight:600; color:#222;">{{ producto.nombre }}</h5>
+        <p class="card-text" style="font-size:0.95rem; color:#555; min-height:40px;">{{ producto.descripcion }}</p>
+        <p class="card-text font-weight-bold text-danger mb-1" style="font-size:1.1rem;">${{ producto.precio }}</p>
+        <span class="badge badge-info mb-2">Stock: {{ producto.stock }}</span>
+        <div>
+          <a href="{{ url_for('auth.login') }}" class="btn btn-outline-danger btn-sm mt-2">Iniciar sesión para comprar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<div class="text-center mt-4">
+  <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg px-5 font-weight-bold">Iniciar sesión y comprar</a>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}Panel de Administración | Ferretería Construmateriales{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="mb-0" style="font-size:2.2rem; font-weight:700; color:#e30613;">Panel de Administración</h2>
+  <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-lg">Cerrar sesión</a>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card mb-4 p-3">
+      <h4 class="mb-3"><i class="fas fa-truck-loading"></i> Pedidos de Clientes</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="thead-light"><tr><th>ID</th><th>Cliente</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody>
+            {% for pedido in pedidos %}
+            <tr>
+              <td>{{ pedido.id }}</td>
+              <td>{{ pedido.cliente.nombre }}</td>
+              <td><span class="badge badge-pill badge-{{ 'success' if pedido.estado == 'aceptado' else 'secondary' }}">{{ pedido.estado|capitalize }}</span></td>
+              <td>
+                <a href="{{ url_for('admin.aceptar_pedido', pedido_id=pedido.id) }}" class="btn btn-success btn-sm">Aceptar</a>
+                <a href="{{ url_for('admin.rechazar_pedido', pedido_id=pedido.id) }}" class="btn btn-danger btn-sm">Rechazar</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card mb-4 p-3">
+      <h4 class="mb-3"><i class="fas fa-dolly"></i> Envíos de Proveedores</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="thead-light"><tr><th>ID</th><th>Proveedor</th><th>Producto</th><th>Cantidad</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody>
+            {% for envio in envios %}
+            <tr>
+              <td>{{ envio.id }}</td>
+              <td>{{ envio.proveedor.nombre }}</td>
+              <td>{{ envio.producto.nombre }}</td>
+              <td>{{ envio.cantidad }}</td>
+              <td>{{ envio.estado }}</td>
+              <td>
+                <a href="{{ url_for('admin.aceptar_envio', envio_id=envio.id) }}" class="btn btn-success btn-sm">Aceptar</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card p-3">
+      <h4 class="mb-3 d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-users-cog"></i> Usuarios</span>
+        <a href="{{ url_for('admin.crear_usuario') }}" class="btn btn-primary btn-sm">Crear Usuario</a>
+      </h4>
+      <form method="get" class="form-inline mb-3">
+        <input type="text" name="filtro" class="form-control mr-2" placeholder="Buscar por nombre..." value="{{ filtro }}">
+        <select name="rol" class="form-control mr-2">
+          <option value="">Todos los roles</option>
+          <option value="admin" {% if rol_filtro=='admin' %}selected{% endif %}>Administrador</option>
+          <option value="cliente" {% if rol_filtro=='cliente' %}selected{% endif %}>Cliente</option>
+          <option value="proveedor" {% if rol_filtro=='proveedor' %}selected{% endif %}>Proveedor</option>
+          <option value="vendedor" {% if rol_filtro=='vendedor' %}selected{% endif %}>Vendedor</option>
+        </select>
+        <select name="estado" class="form-control mr-2">
+          <option value="">Todos los estados</option>
+          <option value="activo" {% if estado_filtro=='activo' %}selected{% endif %}>Activo</option>
+          <option value="bloqueado" {% if estado_filtro=='bloqueado' %}selected{% endif %}>Bloqueado</option>
+        </select>
+        <button type="submit" class="btn btn-outline-info">Buscar</button>
+        {% if filtro or rol_filtro or estado_filtro %}
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-link ml-2">Limpiar</a>
+        {% endif %}
+      </form>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="thead-light"><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+              <td>{{ usuario.id }}</td>
+              <td>{{ usuario.nombre }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>{{ usuario.rol }}</td>
+              <td>{{ usuario.estado }}</td>
+              <td>
+                <a href="{{ url_for('admin.editar_usuario', usuario_id=usuario.id) }}" class="btn btn-info btn-sm">Editar</a>
+                <a href="{{ url_for('admin.eliminar_usuario', usuario_id=usuario.id) }}" class="btn btn-danger btn-sm">Eliminar</a>
+                {% if usuario.estado == 'activo' %}
+                <a href="{{ url_for('admin.bloquear_usuario', usuario_id=usuario.id) }}" class="btn btn-warning btn-sm">Bloquear</a>
+                {% else %}
+                <a href="{{ url_for('admin.desbloquear_usuario', usuario_id=usuario.id) }}" class="btn btn-success btn-sm">Desbloquear</a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card mb-4 p-3">
+      <h4 class="mb-3">Acciones Rápidas</h4>
+      <div class="d-flex">
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-outline-primary btn-sm">Ver pedidos</a>
+        <a href="{{ url_for('admin.admin_envios') }}" class="btn btn-outline-primary btn-sm ml-2">Ver envíos de proveedores</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

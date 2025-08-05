@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Gestión de Envíos de Proveedores{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Envíos de Proveedores</h2>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th>ID</th>
+          <th>Proveedor</th>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for envio in envios %}
+        <tr>
+          <td>{{ envio.id }}</td>
+          <td>{{ envio.proveedor.nombre }}</td>
+          <td>{{ envio.producto.nombre }}</td>
+          <td>{{ envio.cantidad }}</td>
+          <td>{{ envio.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+          <td>
+            <span class="badge badge-{{ 'success' if envio.estado == 'aceptado' else ('danger' if envio.estado == 'rechazado' else 'secondary') }}">{{ envio.estado|capitalize }}</span>
+          </td>
+          <td>
+            {% if envio.estado == 'pendiente' %}
+            <a href="{{ url_for('admin.aceptar_envio', envio_id=envio.id) }}" class="btn btn-success btn-sm">Aceptar</a>
+            <a href="{{ url_for('admin.rechazar_envio', envio_id=envio.id) }}" class="btn btn-danger btn-sm">Rechazar</a>
+            {% else %}
+            <span class="text-muted">Sin acciones</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary mt-3">Volver al panel</a>
+</div>
+{% endblock %}

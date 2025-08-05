@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Factura{% endblock %}
+{% block content %}
+<h2 class="text-center mb-4">Factura</h2>
+<div class="card p-4">
+  <p><strong>Factura N°:</strong> {{ factura.id }}</p>
+  <p><strong>Fecha:</strong> {{ factura.fecha.strftime('%d/%m/%Y') }}</p>
+  <p><strong>Cliente:</strong> {{ factura.pedido.cliente.nombre }}</p>
+  <p><strong>Total:</strong> ${{ factura.total }}</p>
+  <hr>
+  <h5>Detalle</h5>
+  <table class="table table-bordered">
+    <thead><tr><th>Producto</th><th>Cantidad</th><th>Precio Unitario</th><th>Subtotal</th></tr></thead>
+    <tbody>
+      {% for detalle in factura.pedido.detalles %}
+      <tr>
+        <td>{{ detalle.producto.nombre }}</td>
+        <td>{{ detalle.cantidad }}</td>
+        <td>${{ detalle.precio_unitario }}</td>
+        <td>${{ detalle.cantidad * detalle.precio_unitario }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<a href="{{ url_for('cliente.descargar_factura_pdf', factura_id=factura.id) }}" class="btn btn-primary mt-3">Descargar PDF</a>
+{% endblock %}

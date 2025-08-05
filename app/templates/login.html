@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Iniciar sesión | Ferretería Construmateriales{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-lg p-4" style="border-radius:1.5rem;">
+      <div class="text-center mb-4">
+        <img src="https://i.imgur.com/8QfQ2Qp.png" alt="Logo" style="height:60px;">
+        <h2 class="mt-3 mb-1" style="color:#e30613; font-weight:700;">Bienvenido a Ferretería Construmateriales</h2>
+        <p class="mb-0">Inicia sesión para comprar materiales, herramientas y más para tu obra.</p>
+      </div>
+      <form method="post" action="{{ url_for('auth.login') }}">
+        <div class="form-group">
+          <label for="nameUser">Usuario</label>
+          <input type="text" name="nameUser" id="nameUser" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="passwordUser">Contraseña</label>
+          <input type="password" name="passwordUser" id="passwordUser" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+      </form>
+      <div class="mt-3 text-center">
+        <a href="{{ url_for('register.register') }}">¿No tienes cuenta? Regístrate</a>
+        <br>
+        <a href="{{ url_for('publico.home') }}" class="btn btn-outline-danger mt-2">Ver catálogo público</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

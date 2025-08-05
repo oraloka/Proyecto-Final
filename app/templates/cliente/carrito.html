@@ -1,0 +1,126 @@
+{% block title %}Carrito de Compras{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow-lg border-0" style="border-radius:1.5rem;">
+        <div class="card-body p-4">
+          <h2 class="text-center mb-4" style="color:#e30613; font-weight:700;">🛒 Carrito de Compras</h2>
+          {% if carrito|length == 0 %}
+            <div class="alert alert-info text-center">Tu carrito está vacío.</div>
+          {% else %}
+          <form method="post" action="{{ url_for('cliente.confirmar_pedido') }}">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle" style="background:transparent;">
+                <thead class="thead-light">
+                  <tr style="font-size:1.1rem;">
+                    <th>Producto</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-center">Precio Unitario</th>
+                    <th class="text-center">Subtotal</th>
+                    <th class="text-center">Quitar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in carrito %}
+                  <tr style="vertical-align:middle;">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        {% if item.producto.imagen_url and item.producto.imagen_url.startswith('http') %}
+                          <img src="{{ item.producto.imagen_url }}" alt="{{ item.producto.nombre }}" style="width:60px; height:60px; object-fit:contain; border-radius:0.5rem; background:#f8f9fa; margin-right:1rem;">
+                        {% elif item.producto.imagen_url %}
+                          <img src="{{ url_for('static', filename='imagenes/' + item.producto.imagen_url.split('/')[-1]) }}" alt="{{ item.producto.nombre }}" style="width:60px; height:60px; object-fit:contain; border-radius:0.5rem; background:#f8f9fa; margin-right:1rem;">
+                        {% else %}
+                          <img src="https://via.placeholder.com/60x60?text=Producto" alt="{{ item.producto.nombre }}" style="width:60px; height:60px; object-fit:contain; border-radius:0.5rem; background:#f8f9fa; margin-right:1rem;">
+                        {% endif %}
+                        <div>
+                          <div style="font-weight:600; font-size:1.05rem;">{{ item.producto.nombre }}</div>
+                          <div style="font-size:0.95rem; color:#888;">{{ item.producto.descripcion }}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center" style="font-size:1.1rem;">{{ item.cantidad }}</td>
+                    <td class="text-center" style="font-size:1.1rem; color:#e30613; font-weight:600;">${{ item.producto.precio }}</td>
+                    <td class="text-center" style="font-size:1.1rem; font-weight:600;">${{ item.cantidad * item.producto.precio }}</td>
+                    <td class="text-center">
+                      <a href="{{ url_for('cliente.quitar_del_carrito', producto_id=item.producto.id) }}" class="btn btn-outline-danger btn-sm" title="Quitar"><span aria-hidden="true">&times;</span></a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <a href="{{ url_for('cliente.cliente_dashboard') }}" class="btn btn-outline-secondary">&larr; Seguir comprando</a>
+              <div style="font-size:1.3rem; font-weight:700; color:#e30613;">Total: ${{ total }}</div>
+              <button type="submit" class="btn btn-danger btn-lg px-5 font-weight-bold">Confirmar Pedido</button>
+            </div>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% extends 'base.html' %}
+{% block title %}Carrito de Compras | Ferretería Construmateriales{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow-lg border-0" style="border-radius:1.5rem;">
+        <div class="card-body p-4">
+          <h2 class="text-center mb-4" style="color:#e30613; font-weight:700;"><i class="fas fa-shopping-cart"></i> Carrito de Compras</h2>
+          {% if carrito|length == 0 %}
+            <div class="alert alert-info text-center">Tu carrito está vacío.</div>
+          {% else %}
+          <form method="post" action="{{ url_for('cliente.confirmar_pedido') }}">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle" style="background:transparent;">
+                <thead class="thead-light">
+                  <tr style="font-size:1.1rem;">
+                    <th>Producto</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-center">Precio Unitario</th>
+                    <th class="text-center">Subtotal</th>
+                    <th class="text-center">Quitar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in carrito %}
+                  <tr style="vertical-align:middle;">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ item.producto.imagen_url or 'https://via.placeholder.com/60x60?text=Producto' }}" alt="{{ item.producto.nombre }}" style="width:60px; height:60px; object-fit:contain; border-radius:0.5rem; background:#f8f9fa; margin-right:1rem;">
+                        <div>
+                          <div style="font-weight:600; font-size:1.05rem;">{{ item.producto.nombre }}</div>
+                          <div style="font-size:0.95rem; color:#888;">{{ item.producto.descripcion }}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center" style="font-size:1.1rem;">{{ item.cantidad }}</td>
+                    <td class="text-center" style="font-size:1.1rem; color:#e30613; font-weight:600;">${{ item.producto.precio }}</td>
+                    <td class="text-center" style="font-size:1.1rem; font-weight:600;">${{ item.cantidad * item.producto.precio }}</td>
+                    <td class="text-center">
+                      <a href="{{ url_for('cliente.quitar_del_carrito', producto_id=item.producto.id) }}" class="btn btn-outline-danger btn-sm" title="Quitar"><span aria-hidden="true">&times;</span></a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <a href="{{ url_for('cliente.cliente_dashboard') }}" class="btn btn-outline-secondary">&larr; Seguir comprando</a>
+              <div style="font-size:1.3rem; font-weight:700; color:#e30613;">Total: ${{ total }}</div>
+              <button type="submit" class="btn btn-danger btn-lg px-5 font-weight-bold">Confirmar Pedido</button>
+            </div>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

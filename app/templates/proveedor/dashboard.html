@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Panel de Proveedor | Ferretería Construmateriales{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="mb-0" style="font-size:2.2rem; font-weight:700; color:#e30613;">Panel de Proveedor</h2>
+  <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-lg">Cerrar sesión</a>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <a href="{{ url_for('proveedor.nuevo_envio') }}" class="btn btn-primary mb-3">Solicitar nuevo envío de producto</a>
+    <h4><i class="fas fa-dolly"></i> Mis Envíos</h4>
+    <table class="table table-bordered table-hover">
+      <thead><tr><th>ID</th><th>Producto</th><th>Cantidad</th><th>Estado</th></tr></thead>
+      <tbody>
+        {% for envio in envios %}
+        <tr>
+          <td>{{ envio.id }}</td>
+          <td>{{ envio.producto.nombre }}</td>
+          <td>{{ envio.cantidad }}</td>
+          <td>{{ envio.estado }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <h4><i class="fas fa-file-invoice-dollar"></i> Facturas</h4>
+    <table class="table table-bordered table-hover">
+      <thead><tr><th>ID</th><th>Fecha</th><th>Total</th></tr></thead>
+      <tbody>
+        {% for factura in facturas %}
+        <tr>
+          <td>{{ factura.id }}</td>
+          <td>{{ factura.fecha.strftime('%d/%m/%Y') }}</td>
+          <td>${{ factura.total }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

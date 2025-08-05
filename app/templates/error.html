@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Error{% endblock %}
+{% block content %}
+<div class="text-center">
+    <h2 class="mb-4 text-danger">Acceso denegado</h2>
+    <p>No tienes permisos para acceder a esta sección.</p>
+    {% if current_user.is_authenticated %}
+      {% if current_user.rol == 'admin' %}
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-primary mt-3">Volver al panel de administrador</a>
+      {% elif current_user.rol == 'proveedor' %}
+        <a href="{{ url_for('proveedor.proveedor_dashboard') }}" class="btn btn-primary mt-3">Volver al panel de proveedor</a>
+      {% elif current_user.rol == 'vendedor' %}
+        <a href="{{ url_for('vendedor.vendedor_dashboard') }}" class="btn btn-primary mt-3">Volver al panel de vendedor</a>
+      {% elif current_user.rol == 'cliente' %}
+        <a href="{{ url_for('cliente.cliente_dashboard') }}" class="btn btn-primary mt-3">Volver al panel de cliente</a>
+      {% endif %}
+    {% else %}
+      <a href="{{ url_for('auth.login') }}" class="btn btn-primary mt-3">Iniciar sesión</a>
+    {% endif %}
+</div>
+{% endblock %}

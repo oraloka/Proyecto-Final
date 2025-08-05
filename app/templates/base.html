@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Ferretería Construmateriales{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f9f9f9 0%, #e30613 100%);
+        }
+        .main-content, .card, .logo, .form-control, .btn, label, h2, h5, p, a, .carousel-caption {
+            color: #222 !important;
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            background: rgba(255,255,255,0.97);
+        }
+        .btn-primary, .btn-danger, .btn-outline-danger {
+            border-radius: 2rem;
+            padding-left: 2rem;
+            padding-right: 2rem;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: #e30613;
+            border: none;
+        }
+        .btn-danger {
+            background: #222;
+            border: none;
+        }
+        .btn-outline-danger {
+            color: #e30613 !important;
+            border-color: #e30613;
+        }
+        .form-control {
+            border-radius: 2rem;
+        }
+        .container {
+            margin-top: 5vh;
+        }
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e30613;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px #e30613, 0 0 20px #f9d423;
+        }
+        .material-icon {
+            font-size: 2rem;
+            color: #e30613;
+            margin-right: 0.5rem;
+        }
+        .carousel-caption {
+            background: rgba(255,255,255,0.8);
+            border-radius: 1rem;
+            color: #222 !important;
+        }
+        a, a:visited, a:active {
+            color: #e30613 !important;
+        }
+        .navbar {
+            background: #fff !important;
+            border-bottom: 3px solid #e30613;
+        }
+        .navbar-brand span {
+            color: #e30613 !important;
+        }
+        .badge-primary {
+            background: #e30613 !important;
+        }
+        .badge-danger {
+            background: #f9d423 !important;
+            color: #222 !important;
+        }
+        .badge-info {
+            background: #222 !important;
+            color: #fff !important;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light shadow-sm">
+      <a class="navbar-brand d-flex align-items-center" href="/">
+        <img src="https://i.imgur.com/8QfQ2Qp.png" alt="Logo" style="height:40px; margin-right:10px;">
+        <span class="font-weight-bold" style="font-size:1.5rem;">Ferretería Construmateriales</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <form class="form-inline mx-auto" style="max-width:400px; width:100%;">
+          <input class="form-control mr-sm-2 w-75" type="search" placeholder="Buscar materiales, herramientas..." aria-label="Buscar">
+          <button class="btn btn-outline-danger my-2 my-sm-0" type="submit"><i class="fas fa-search"></i> Buscar</button>
+        </form>
+        <ul class="navbar-nav ml-auto align-items-center">
+          {% if current_user.is_authenticated %}
+            <li class="nav-item mr-3">
+              <span class="badge badge-primary" style="font-size:1rem;"><i class="fas fa-user-hard-hat"></i> {{ current_user.rol|capitalize }}</span>
+            </li>
+            <li class="nav-item mr-3">
+              <a href="{{ url_for('cliente.ver_carrito') }}" class="nav-link">
+                <span class="material-icon"><i class="fas fa-shopping-cart"></i></span>
+                <span class="badge badge-danger">
+                  {{ carrito_count }}
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Cerrar sesión</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('perfil.perfil') }}"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a href="{{ url_for('auth.login') }}" class="btn btn-outline-danger">Iniciar sesión</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+    <div class="container mt-4">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <div class="main-content">
+        <div class="card p-4" style="border-radius:1rem;">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

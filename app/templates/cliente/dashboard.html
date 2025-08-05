@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Panel de Cliente | Ferretería Construmateriales{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="mb-0" style="font-size:2.2rem; font-weight:700; color:#e30613;">Catálogo de Materiales y Herramientas</h2>
+  <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-lg">Cerrar sesión</a>
+</div>
+<form method="get" class="mb-4">
+  <div class="row align-items-end">
+    <div class="col-md-5 mb-2">
+      <input type="text" name="q" class="form-control" placeholder="Buscar producto..." value="{{ q }}">
+    </div>
+    <div class="col-md-4 mb-2">
+      <select name="tipo" class="form-control">
+        <option value="">Todos los tipos</option>
+        {% for t in tipos %}
+          <option value="{{ t }}" {% if t == tipo_seleccionado %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3 mb-2">
+      <button type="submit" class="btn btn-danger w-100">Buscar / Filtrar</button>
+    </div>
+  </div>
+</form>
+<div class="row">
+  {% if productos|length == 0 %}
+    <div class="col-12">
+      <div class="alert alert-warning text-center">No se encontraron productos.</div>
+    </div>
+  {% endif %}
+  {% for producto in productos %}
+  <div class="col-md-3 col-6 mb-4">
+    <div class="card h-100 shadow-sm product-card text-center" style="border-radius:1rem; border:1px solid #eee;">
+      {% if producto.imagen_url and producto.imagen_url.startswith('http') %}
+        <img src="{{ producto.imagen_url }}" class="card-img-top mx-auto mt-3" alt="{{ producto.nombre }}" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      {% elif producto.imagen_url %}
+        <img src="{{ url_for('static', filename='imagenes/' + producto.imagen_url.split('/')[-1]) }}" class="card-img-top mx-auto mt-3" alt="{{ producto.nombre }}" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      {% else %}
+        <img src="https://via.placeholder.com/200x150?text=Producto" class="card-img-top mx-auto mt-3" alt="{{ producto.nombre }}" style="height: 120px; width:120px; object-fit:contain; background:#f8f9fa; border-radius:0.5rem;">
+      {% endif %}
+      <div class="card-body p-2">
+        <h5 class="card-title" style="font-size:1.1rem; font-weight:600; color:#222;">{{ producto.nombre }}</h5>
+        <span class="badge badge-secondary mb-1">{{ producto.tipo }}</span>
+        <p class="card-text" style="font-size:0.95rem; color:#555; min-height:40px;">{{ producto.descripcion }}</p>
+        <p class="card-text font-weight-bold text-danger mb-1" style="font-size:1.1rem;">${{ producto.precio }}</p>
+        <span class="badge badge-info mb-2">Stock: {{ producto.stock }}</span>
+        <div>
+          <form method="post" action="{{ url_for('cliente.realizar_pedido') }}" class="d-flex flex-column align-items-center">
+            <input type="hidden" name="producto_id" value="{{ producto.id }}">
+            <div class="input-group mb-2" style="max-width:110px;">
+              <input type="number" name="cantidad" min="1" max="{{ producto.stock }}" value="1" class="form-control form-control-sm text-center" style="border-radius:1rem;">
+            </div>
+            <button type="submit" class="btn btn-outline-danger btn-sm mt-2">Agregar al carrito</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<div class="card mb-4 p-3 mt-4">
+  <h4 class="mb-3">Mis Pedidos</h4>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="thead-light"><tr><th>ID</th><th>Estado</th></tr></thead>
+      <tbody>
+        {% for pedido in pedidos %}
+        <tr>
+          <td>{{ pedido.id }}</td>
+          <td><span class="badge badge-pill badge-{{ 'success' if pedido.estado == 'aceptado' else 'secondary' }}">{{ pedido.estado|capitalize }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="card p-3">
+  <h4 class="mb-3">Facturas</h4>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="thead-light"><tr><th>ID</th><th>Fecha</th><th>Total</th><th>Ver</th></tr></thead>
+      <tbody>
+        {% for factura in facturas %}
+        <tr>
+          <td>{{ factura.id }}</td>
+          <td>{{ factura.fecha.strftime('%d/%m/%Y') }}</td>
+          <td>${{ factura.total }}</td>
+          <td><a href="{{ url_for('cliente.ver_factura', factura_id=factura.id) }}" class="btn btn-info btn-sm">Ver</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
