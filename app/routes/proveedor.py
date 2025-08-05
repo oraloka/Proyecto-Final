@@ -14,7 +14,9 @@ def proveedor_dashboard():
         return redirect(url_for('auth.login'))
     envios = EnvioProveedor.query.filter_by(id_proveedor=current_user.id).all()
     facturas = Factura.query.all()  # Mostrar solo las relevantes si se requiere
-    return render_template('proveedor/dashboard.html', envios=envios, facturas=facturas)
+    from app.models.core import Producto
+    productos = Producto.query.filter_by(id_proveedor=current_user.id).all()
+    return render_template('proveedor/dashboard.html', envios=envios, facturas=facturas, productos=productos)
 
 @bp.route('/proveedor/entregar_envio', methods=['POST'])
 @login_required
@@ -33,7 +35,7 @@ def nuevo_envio():
         flash('Acceso denegado.', 'danger')
         return redirect(url_for('auth.login'))
     from app.models.core import Producto, EnvioProveedor
-    productos = Producto.query.filter((Producto.id_proveedor==current_user.id) | (Producto.id_proveedor==None)).all()
+    productos = Producto.query.all()
     if request.method == 'POST':
         producto_id = int(request.form['producto_id'])
         cantidad = int(request.form['cantidad'])
@@ -100,7 +102,8 @@ def nuevo_producto_proveedor():
             precio=precio,
             imagen_url=imagen_url,
             stock=0,
-            id_proveedor=current_user.id
+            id_proveedor=current_user.id,
+            aprobado=False
         )
         db.session.add(producto)
         db.session.commit()

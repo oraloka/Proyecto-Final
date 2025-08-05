@@ -25,6 +25,7 @@ class Producto(db.Model):
     stock = db.Column(db.Integer, default=0)
     id_proveedor = db.Column(db.Integer, db.ForeignKey('usuario.id'))
     proveedor = db.relationship('Usuario', foreign_keys=[id_proveedor])
+    aprobado = db.Column(db.Boolean, default=False)  # Solo productos aprobados aparecen en la tienda
 
 class Pedido(db.Model):
     __tablename__ = 'pedido'

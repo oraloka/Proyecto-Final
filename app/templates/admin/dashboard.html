@@ -1,3 +1,4 @@
+    
 {% extends 'base.html' %}
 {% block title %}Panel de Administración | Ferretería Construmateriales{% endblock %}
 {% block content %}
@@ -21,28 +22,6 @@
               <td>
                 <a href="{{ url_for('admin.aceptar_pedido', pedido_id=pedido.id) }}" class="btn btn-success btn-sm">Aceptar</a>
                 <a href="{{ url_for('admin.rechazar_pedido', pedido_id=pedido.id) }}" class="btn btn-danger btn-sm">Rechazar</a>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="card mb-4 p-3">
-      <h4 class="mb-3"><i class="fas fa-dolly"></i> Envíos de Proveedores</h4>
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-          <thead class="thead-light"><tr><th>ID</th><th>Proveedor</th><th>Producto</th><th>Cantidad</th><th>Estado</th><th>Acciones</th></tr></thead>
-          <tbody>
-            {% for envio in envios %}
-            <tr>
-              <td>{{ envio.id }}</td>
-              <td>{{ envio.proveedor.nombre }}</td>
-              <td>{{ envio.producto.nombre }}</td>
-              <td>{{ envio.cantidad }}</td>
-              <td>{{ envio.estado }}</td>
-              <td>
-                <a href="{{ url_for('admin.aceptar_envio', envio_id=envio.id) }}" class="btn btn-success btn-sm">Aceptar</a>
               </td>
             </tr>
             {% endfor %}
@@ -93,6 +72,51 @@
                 {% else %}
                 <a href="{{ url_for('admin.desbloquear_usuario', usuario_id=usuario.id) }}" class="btn btn-success btn-sm">Desbloquear</a>
                 {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tabla de productos (pendientes y aprobados) después de usuarios -->
+    <div class="card mt-4 p-3">
+      <h4 class="mb-3">Gestión de Productos</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Tipo</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Proveedor</th>
+              <th>Aprobado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for producto in productos %}
+            <tr>
+              <td>{{ producto.id }}</td>
+              <td>{{ producto.nombre }}</td>
+              <td>{{ producto.descripcion }}</td>
+              <td>{{ producto.tipo }}</td>
+              <td>${{ producto.precio }}</td>
+              <td>{{ producto.stock }}</td>
+              <td>{{ producto.proveedor.nombre if producto.proveedor else '' }}</td>
+              <td>
+                {% if producto.aprobado %}
+                  <span class="badge bg-success">Aprobado</span>
+                {% else %}
+                  <span class="badge bg-warning text-dark">Pendiente</span>
+                {% endif %}
+              </td>
+              <td>
+                <a href="{{ url_for('admin.editar_producto', producto_id=producto.id) }}" class="btn btn-info btn-sm">Aprobar/Editar</a>
               </td>
             </tr>
             {% endfor %}

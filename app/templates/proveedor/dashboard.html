@@ -1,3 +1,4 @@
+    
 {% extends 'base.html' %}
 {% block title %}Panel de Proveedor | Ferretería Construmateriales{% endblock %}
 {% block content %}
@@ -9,6 +10,9 @@
   <div class="col-md-12">
     <a href="{{ url_for('proveedor.nuevo_envio') }}" class="btn btn-primary mb-3">Solicitar nuevo envío de producto</a>
     <h4><i class="fas fa-dolly"></i> Mis Envíos</h4>
+    {% if envios|length == 0 %}
+      <div class="alert alert-info">No tienes envíos registrados.</div>
+    {% else %}
     <table class="table table-bordered table-hover">
       <thead><tr><th>ID</th><th>Producto</th><th>Cantidad</th><th>Estado</th></tr></thead>
       <tbody>
@@ -22,6 +26,7 @@
         {% endfor %}
       </tbody>
     </table>
+    {% endif %}
     <h4><i class="fas fa-file-invoice-dollar"></i> Facturas</h4>
     <table class="table table-bordered table-hover">
       <thead><tr><th>ID</th><th>Fecha</th><th>Total</th></tr></thead>
@@ -35,6 +40,31 @@
         {% endfor %}
       </tbody>
     </table>
+
+    <h4><i class="fas fa-box"></i> Mis Productos</h4>
+    {% if productos|length == 0 %}
+      <div class="alert alert-info">No tienes productos registrados.</div>
+    {% else %}
+    <table class="table table-bordered table-hover">
+      <thead><tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Estado</th></tr></thead>
+      <tbody>
+        {% for producto in productos %}
+        <tr>
+          <td>{{ producto.id }}</td>
+          <td>{{ producto.nombre }}</td>
+          <td>${{ producto.precio }}</td>
+          <td>
+            {% if producto.aprobado %}
+              <span class="badge bg-success">Aprobado</span>
+            {% else %}
+              <span class="badge bg-warning text-dark">Pendiente</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

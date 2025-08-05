@@ -11,7 +11,7 @@ def vendedor_dashboard():
     if current_user.rol != 'vendedor':
         flash('Acceso denegado.', 'danger')
         return redirect(url_for('auth.login'))
-    productos = Producto.query.all()
+    productos = Producto.query.filter_by(aprobado=True).all()
     pedidos = Pedido.query.all()
     return render_template('vendedor/dashboard.html', productos=productos, pedidos=pedidos)
 

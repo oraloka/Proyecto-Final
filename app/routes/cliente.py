@@ -14,7 +14,7 @@ def cliente_dashboard():
     # Búsqueda y filtro
     q = request.args.get('q', '').strip()
     tipo = request.args.get('tipo', '').strip()
-    productos_query = Producto.query
+    productos_query = Producto.query.filter_by(aprobado=True)
     if q:
         productos_query = productos_query.filter(Producto.nombre.ilike(f"%{q}%"))
     if tipo:

@@ -6,7 +6,56 @@ from app.models.core import Usuario, Pedido, EnvioProveedor, Factura
 from app import db
 from werkzeug.security import generate_password_hash
 
+from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask_login import login_required, current_user
+from app.models.core import Usuario, Pedido, EnvioProveedor, Factura
+from app import db
+from werkzeug.security import generate_password_hash
+
 bp = Blueprint('admin', __name__)
+
+@bp.route('/admin/productos')
+@login_required
+def lista_productos():
+    if current_user.rol != 'admin':
+        flash('Acceso denegado.', 'danger')
+        return redirect(url_for('auth.login'))
+    from app.models.core import Producto
+    productos = Producto.query.order_by(Producto.aprobado.asc(), Producto.id.desc()).all()
+    return render_template('admin/lista_productos.html', productos=productos)
+
+@bp.route('/admin/productos/editar/<int:producto_id>', methods=['GET', 'POST'])
+@login_required
+def editar_producto(producto_id):
+    if current_user.rol != 'admin':
+        flash('Acceso denegado.', 'danger')
+        return redirect(url_for('auth.login'))
+    from app.models.core import Producto
+    producto = Producto.query.get_or_404(producto_id)
+    if request.method == 'POST':
+        producto.nombre = request.form['nombre']
+        producto.descripcion = request.form['descripcion']
+        producto.precio = float(request.form['precio'])
+        producto.stock = int(request.form['stock'])
+        producto.tipo = request.form.get('tipo', producto.tipo)
+        producto.aprobado = 'aprobado' in request.form
+        db.session.commit()
+        flash('Producto actualizado correctamente.', 'success')
+        return redirect(url_for('admin.lista_productos'))
+    return render_template('admin/editar_producto.html', producto=producto)
+
+@bp.route('/admin/productos/eliminar/<int:producto_id>')
+@login_required
+def eliminar_producto(producto_id):
+    if current_user.rol != 'admin':
+        flash('Acceso denegado.', 'danger')
+        return redirect(url_for('auth.login'))
+    from app.models.core import Producto
+    producto = Producto.query.get_or_404(producto_id)
+    db.session.delete(producto)
+    db.session.commit()
+    flash('Producto eliminado.', 'info')
+    return redirect(url_for('admin.lista_productos'))
 
 # --- AGREGAR PRODUCTO (stock 100 por defecto, editable por proveedor) ---
 @bp.route('/admin/productos/nuevo', methods=['GET', 'POST'])
@@ -23,7 +72,18 @@ def nuevo_producto():
         precio = float(request.form['precio'])
         stock = int(request.form['stock']) if request.form['stock'] else 100
         id_proveedor = int(request.form['id_proveedor']) if request.form['id_proveedor'] else None
-        producto = Producto(nombre=nombre, descripcion=descripcion, precio=precio, stock=stock, id_proveedor=id_proveedor)
+        imagen = request.files.get('imagen')
+        if not imagen or imagen.filename == '':
+            flash('La imagen es obligatoria.', 'danger')
+            return render_template('admin/nuevo_producto.html', proveedores=proveedores)
+        # Guardar imagen en static/imagenes
+        from werkzeug.utils import secure_filename
+        import os
+        filename = secure_filename(imagen.filename)
+        ruta_imagen = os.path.join('app', 'static', 'imagenes', filename)
+        imagen.save(ruta_imagen)
+        imagen_url = f'/static/imagenes/{filename}'
+        producto = Producto(nombre=nombre, descripcion=descripcion, precio=precio, stock=stock, id_proveedor=id_proveedor, imagen_url=imagen_url)
         db.session.add(producto)
         db.session.commit()
         flash('Producto agregado correctamente.', 'success')
@@ -88,6 +148,8 @@ def admin_dashboard():
     if current_user.rol != 'admin':
         flash('Acceso denegado.', 'danger')
         return redirect(url_for('auth.login'))
+    from app.models.core import Producto
+    productos = Producto.query.order_by(Producto.id.desc()).all()
     filtro = request.args.get('filtro', '').strip()
     rol_filtro = request.args.get('rol', '').strip()
     pedidos = Pedido.query.all()
@@ -101,7 +163,7 @@ def admin_dashboard():
     if estado_filtro:
         query = query.filter(Usuario.estado == estado_filtro)
     usuarios = query.all()
-    return render_template('admin/dashboard.html', pedidos=pedidos, envios=envios, usuarios=usuarios, filtro=filtro, rol_filtro=rol_filtro, estado_filtro=estado_filtro)
+    return render_template('admin/dashboard.html', pedidos=pedidos, envios=envios, usuarios=usuarios, productos=productos, filtro=filtro, rol_filtro=rol_filtro, estado_filtro=estado_filtro)
 
 @bp.route('/admin/aceptar_pedido/<int:pedido_id>')
 @login_required

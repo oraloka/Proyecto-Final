@@ -16,7 +16,7 @@ def home():
             return redirect(url_for('proveedor.proveedor_dashboard'))
         elif getattr(current_user, 'rol', None) == 'vendedor':
             return redirect(url_for('vendedor.vendedor_dashboard'))
-    productos = Producto.query.all()
+    productos = Producto.query.filter_by(aprobado=True).all()
     return render_template('publico/catalogo_publico.html', productos=productos)
 
 @bp.route('/hacer_pedido')
